@@ -1,0 +1,47 @@
+﻿@page "/posts"
+@attribute [StreamRendering]
+@using Microsoft.AspNetCore.Authorization
+@using Data.Services;
+@inject dbService d
+@attribute [Authorize]
+<PageTitle>Post create</PageTitle>
+
+<h1>Post create</h1>
+
+<p>This component demonstrates showing data.</p>
+
+@if (posts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+              
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var post in posts)
+            {
+                <tr>
+                    <td>@post.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    @using Data;
+    private Post[] posts = [];
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        posts = d.GetPosts();
+    }
+
+
+}

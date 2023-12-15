@@ -1,0 +1,45 @@
+﻿@page "/posts/create"
+@attribute [StreamRendering]
+@using Microsoft.AspNetCore.Authorization
+@inject AuthenticationStateProvider auth;
+@using Data.Services;
+@inject dbService d;
+
+@attribute [Authorize]
+<PageTitle>Post</PageTitle>
+
+<h1>Post create</h1>
+
+<p>This component demonstrates showing data.</p>
+
+<EditForm Model=@post OnSubmit="HandleSubmit">
+    <div class="mb-3">
+    <label for="title" class="form-label">Title</label>
+    <InputText id="title" @bind-Value="post.Title" class="form-control"></InputText>
+    </div>
+    <div class="mb-3">
+        <label for="body" class="form-label">Content</label>
+        <InputTextArea id="body" rows="10" @bind-Value="post.Body" maxLength="4000" class="form-control"></InputTextArea>
+    </div>
+    <button type="submit" class="btn-primary"> Create</button>
+</EditForm>
+
+@code {
+    @using Data;
+    private Post post = new()
+    {
+        Title = string.Empty,
+        Body = string.Empty,
+
+    };
+    public async void HandleSubmit()
+    {
+        var authState = await auth.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if(user != null)
+        {
+            new d.AddPost(post, user.FindFirst(u => u.Type.Contains("nameIdentifier"))!.Value);
+        }
+    }
+
+}
