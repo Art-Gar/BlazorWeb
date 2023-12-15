@@ -39,11 +39,10 @@
         <AuthorizeView>
             <Authorized>
                 <div class="nav-item px-3">
-                    <form action="Posts/Create" method="get">
-                        <AntiforgeryToken />
+                    <form action="posts" method="get">
                         <input type="hidden" name="ReturnUrl" value="@currentUrl" />
                         <button type="submit" class="nav-link">
-                            <span aria-hidden="true"></span> Create post
+                            <span aria-hidden="true"></span> Posts
                         </button>
                     </form>
                 </div>

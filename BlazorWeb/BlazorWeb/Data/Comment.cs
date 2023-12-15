@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BlazorWeb.Data
 {
@@ -9,14 +10,12 @@ namespace BlazorWeb.Data
 
         public string Body { get; set; }
         public string UserId { get; set; }
-        public string PostId { get; set; }
+        public int PostId { get; set; }
         public Post Post {  get; set; }
         public ApplicationUser Author { get; set; }
-        public Comment(string body, string UserId, string postId) {
-            Body = body;
-            this.UserId = UserId;
-            this.PostId = postId;
-        }
         public List <CommentVote> Votes { get; set; }
+        [Timestamp]
+        public DateTime? CreatedAt { get; set;}
+
     }
 }

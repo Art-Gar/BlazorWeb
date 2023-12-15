@@ -1,0 +1,49 @@
+﻿@page "/posts/create"
+@using BlazorWeb.Data
+@using Microsoft.AspNetCore.Identity
+@attribute [StreamRendering]
+@using Microsoft.AspNetCore.Authorization
+@inject PostDb p;
+@attribute [Authorize]
+
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
+@inject NavigationManager navigationManager
+@inject UserManager<ApplicationUser> UserManager
+
+<PageTitle>Post create</PageTitle>
+
+<h1>Post create</h1>
+
+<p>This component demonstrates showing data.</p>
+
+
+<EditForm Model=@post OnSubmit="HandleSubmit" id="form-ref" FormName="form-ref">
+    <label for="Title">Title</label>
+    <InputText id="Title" @bind-Value="post.Title"></InputText>
+    <label for="Body">Body</label>
+    <InputTextArea id="Body" rows="10" @bind-Value="post.Body" maxLength="4000"></InputTextArea>
+    <button type="submit" class="btn-primary" form="form-ref">Submit</button>
+</EditForm>
+
+@code {
+    private string userId;
+    [SupplyParameterFromForm]
+    private Post post { get; set; } = new Post();
+
+    public async Task HandleSubmit()
+    {
+        post.CreatedAt = DateTime.Now;
+        post.UserId = userId;
+        await p.AddPost(post, userId);
+        navigationManager.NavigateTo("/posts");
+        post = new Post(); // Reset the form model after submission
+    }
+    private string? name = null;
+    protected async override Task OnInitializedAsync()
+    {
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var user = authstate.User;
+        userId = user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
+    }
+
+}

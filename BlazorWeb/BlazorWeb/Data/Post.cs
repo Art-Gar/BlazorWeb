@@ -15,5 +15,7 @@ namespace BlazorWeb.Data
         public virtual List<Comment> Comments { get; set; }
         public virtual ApplicationUser Author { get; set; }
         public virtual List<PostVote> Votes { get; set; }
+        [Timestamp]
+        public DateTime? CreatedAt { get; set;}
     }
 }

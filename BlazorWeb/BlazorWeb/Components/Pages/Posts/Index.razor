@@ -1,15 +1,16 @@
-﻿@page "/posts"
+﻿@page "/posts";
+@rendermode InteractiveServer
 @attribute [StreamRendering]
-@using Microsoft.AspNetCore.Authorization
-@using Data.Services;
-@inject dbService d
+@using Microsoft.AspNetCore.Authorization;
+@using Data;
+@inject PostDb p
+@inject NavigationManager navigationManager
 @attribute [Authorize]
 <PageTitle>Post create</PageTitle>
 
 <h1>Post create</h1>
 
-<p>This component demonstrates showing data.</p>
-
+<button class="btn btn-primary" @onclick="CreatePost">Create new post</button>
 @if (posts == null)
 {
     <p><em>Loading...</em></p>
@@ -19,7 +20,7 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Name</th>
+                <th>Name </th>
               
             </tr>
         </thead>
@@ -27,7 +28,7 @@ else
             @foreach (var post in posts)
             {
                 <tr>
-                    <td>@post.</td>
+                    <td><a href="posts/@post.Id">@post.Title. </a></td>
                 </tr>
             }
         </tbody>
@@ -40,8 +41,11 @@ else
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        posts = d.GetPosts();
+        posts = p.GetPosts();
     }
-
-
+    public void CreatePost()
+    {
+        Console.WriteLine("My debug output.");
+        navigationManager.NavigateTo("/posts/create");
+    }
 }

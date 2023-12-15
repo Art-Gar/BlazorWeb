@@ -8,6 +8,8 @@ namespace BlazorWeb.Data
     {
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<CommentVote> CommentVotes { get; set; }
+        public DbSet<PostVote> PostVotes { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -17,6 +19,7 @@ namespace BlazorWeb.Data
                 post.HasKey(p => p.Id);
                 post.Property<string>(p => p.Body);
                 post.Property<string>(p => p.Title);
+                post.Property<DateTime?>(p => p.CreatedAt).HasDefaultValue(DateTime.Now);
                 post.HasOne(p => p.Author).WithMany(a => a.Posts).HasForeignKey("UserId").OnDelete(DeleteBehavior.Restrict);
                 post.HasMany(p => p.Comments).WithOne(u => u.Post);
                 post.HasMany(p => p.Votes).WithOne(v => v.Post).HasForeignKey("PostId");
