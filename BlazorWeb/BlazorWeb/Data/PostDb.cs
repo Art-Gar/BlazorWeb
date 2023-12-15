@@ -1,23 +1,33 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BlazorWeb.Data
 {
-    public  class PostDb
+    public  class PostDb: IPostDb
     {
-        private ApplicationDbContext _dbContext;
-        PostDb()
-        {
-            _dbContext = new ApplicationDbContext("");
+        private IDbContextFactory<ApplicationDbContext> _dbContext;
+        public PostDb(IDbContextFactory<ApplicationDbContext> db) {
+            _dbContext = db;
         }
-        public  Post[] GetPosts() { return _dbContext.Posts.ToArray(); }
-        public  Post[] CreatePost() { return _dbContext.Posts.ToArray(); }
+        public  Post[] GetPosts() {
+            using (var context = _dbContext.CreateDbContext()) {
+                return context.Posts.ToArray();
+            }
+        }
+
 
         public void AddPost( Post post, string userId)
-        { 
-            post.UserId = userId;
-           _dbContext.Posts.Add(post);
+        {
+            using (var context = _dbContext.CreateDbContext())
+            {
+                post.UserId = userId;
+                Console.WriteLine(post);
+                   context.Posts.Add(new Post { UserId: "3d52c705-9bf7-4c93-bd99-d5501afac6d3", });
+                context.SaveChanges();
+            }
+
         }
     }
 }

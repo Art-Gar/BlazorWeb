@@ -16,7 +16,7 @@ namespace BlazorWeb.Data.Services
         {
             using (var context = _dbContextFactory.CreateDbContext())
                 post.UserId = userId;
-            context.Posts.Add(post);
+            //context.Posts.Add(post);
         }
     }
 }

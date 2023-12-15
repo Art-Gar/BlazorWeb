@@ -2,6 +2,7 @@ using BlazorWeb.Client.Pages;
 using BlazorWeb.Components;
 using BlazorWeb.Components.Account;
 using BlazorWeb.Data;
+using BlazorWeb.Data.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -31,17 +32,17 @@ namespace BlazorWeb
                 .AddIdentityCookies();
 
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString));
+            builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
+                options.UseSqlServer(connectionString));    
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
+            builder.Services.AddTransient<PostDb>();
             builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddSignInManager()
                 .AddDefaultTokenProviders();
 
-            builder.Services.AddDbContextFactory<ApplicationDbContext>((DbContextOptionsBuilder options) => options.UseSqlServer(connectionString));
-            builder.Services.AddTransient<ApplicationDbContext>();
+            //builder.Services.AddDbContextFactory<ApplicationDbContext>((DbContextOptionsBuilder options) => options.UseSqlServer(connectionString));
+            //builder.Services.AddTransient<dbService>();
             builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
             var app = builder.Build();

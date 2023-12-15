@@ -1,8 +1,8 @@
-﻿@page "/posts"
+﻿@page "/posts";
 @attribute [StreamRendering]
-@using Microsoft.AspNetCore.Authorization
-@using Data.Services;
-@inject dbService d
+@using Microsoft.AspNetCore.Authorization;
+@using Data;
+@inject PostDb p
 @attribute [Authorize]
 <PageTitle>Post create</PageTitle>
 
@@ -27,7 +27,7 @@ else
             @foreach (var post in posts)
             {
                 <tr>
-                    <td>@post.</td>
+                    <td>@post.Title.</td>
                 </tr>
             }
         </tbody>
@@ -40,8 +40,6 @@ else
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        posts = d.GetPosts();
+        posts = p.GetPosts();
     }
-
-
 }

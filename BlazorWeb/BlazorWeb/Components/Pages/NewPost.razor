@@ -1,12 +1,12 @@
 ﻿@page "/posts/create"
 @attribute [StreamRendering]
 @using Microsoft.AspNetCore.Authorization
-@inject AuthenticationStateProvider auth;
 @using Data.Services;
-@inject dbService d;
-
+@inject PostDb p;
 @attribute [Authorize]
-<PageTitle>Post</PageTitle>
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
+@inject NavigationManager navigationManager
+<PageTitle>Post create</PageTitle>
 
 <h1>Post create</h1>
 
@@ -25,21 +25,24 @@
 </EditForm>
 
 @code {
-    @using Data;
+    @using Data
+    private string? name = null;
+    protected async override Task OnInitializedAsync()
+    {
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var user = authstate.User;
+        name = user.Identity.Name;
+    }
+@using Data;
     private Post post = new()
-    {
-        Title = string.Empty,
-        Body = string.Empty,
-
-    };
-    public async void HandleSubmit()
-    {
-        var authState = await auth.GetAuthenticationStateAsync();
-        var user = authState.User;
-        if(user != null)
         {
-            new d.AddPost(post, user.FindFirst(u => u.Type.Contains("nameIdentifier"))!.Value);
-        }
+            Title = string.Empty,
+            Body = string.Empty,
+        };
+    private void  HandleSubmit() {
+        Console.WriteLine("idiot");
+        navigationManager.NavigateTo("/");
+        p.AddPost(post, name);
     }
 
 }
